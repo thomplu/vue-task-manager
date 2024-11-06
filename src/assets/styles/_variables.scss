@@ -1,0 +1,15 @@
+:root {
+    --primary-color: #3646f6;
+    --delete-color: #b90808;
+    --primary-bg: #FFF1BD;
+    --button-bg: #F8DF86;
+    --text-color: #323232;
+    --page-padding: 20;
+    --task-bg-important: #FFD8D8;
+    --task-border-important: #FF0000;
+    --rem-page-padding: calc(var(--page-padding) / 16 * 1rem);
+}
+
+$pagePadding: 20;
+$borderRadius: 8;
+$fontSize: 16;

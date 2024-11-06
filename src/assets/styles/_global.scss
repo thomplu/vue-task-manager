@@ -1,0 +1,49 @@
+@import "variables";
+@import "functions";
+@import "fonts";
+
+body {
+    margin: 0;
+}
+
+button, .button {
+    padding: 0.5rem 1rem;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: px-to-rem($fontSize);
+
+    &:disabled {
+        background: #706f6f;
+        cursor: not-allowed;
+    }
+
+    &--is-delete {
+        background: var(--delete-color);
+    }
+}
+
+input, .input {
+    height: 30px;
+    padding: 0 5px;
+    border-radius: 4px;
+    border: 1px solid #555;
+    font-size: px-to-rem($fontSize);
+}
+
+textarea {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #555;
+    font-size: px-to-rem($fontSize);
+}
+
+* {
+    box-sizing: border-box;
+    font-family: "Inter", serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--text-color);
+}

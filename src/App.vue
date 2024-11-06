@@ -17,7 +17,7 @@
 </script>
 
 <style lang="scss">
-@import "scss/_global.scss";
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -26,7 +26,7 @@
 }
 
 nav {
-  padding: var(--page-padding);
+  padding: px-to-rem($pagePadding);
 
   a {
     font-weight: bold;

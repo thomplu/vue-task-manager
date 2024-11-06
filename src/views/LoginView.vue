@@ -42,7 +42,6 @@
                 username: credentials.username,
                 password: credentials.password,
             })
-            console.log('Push to tasks view after login')
             await router.push({name: 'Tasks'})
 
         } catch (e: any) {
@@ -73,11 +72,11 @@
     .form {
         &__label {
             display: block;
-            margin-bottom: 1px;
+            margin-bottom: px-to-rem(1);
         }
 
         &__section {
-            margin-bottom: 10px;
+            margin-bottom: px-to-rem(10);
         }
     }
     .register {
@@ -85,10 +84,10 @@
     }
     .btn {
         margin-bottom: 1rem;
-        min-width: 82px;
+        min-width: px-to-rem(82);
     }
     .error {
-        height: 30px;
+        height: px-to-rem(30);
         color: red;
     }
 </style>

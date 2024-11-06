@@ -1,5 +1,6 @@
 import { TaskData, TaskItem } from '@/types/type';
 import { ApiError } from '@/types/type';
+import router from '@/router';
 
 class ApiService {
     public accessToken = ''
@@ -7,7 +8,9 @@ class ApiService {
         const response = await fetch(url, options);
 
         if (!response.ok) {
-            // If response status is not OK (200-299), handle error
+            if (response.status === 403) {
+                await router.push({name: 'Login'})
+            }
             throw await ApiService.handleError(response);
         }
 

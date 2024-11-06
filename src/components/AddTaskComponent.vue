@@ -1,52 +1,53 @@
 <template>
     <div class="popup__overlay">
-        <div class="popup__form-container">
-            <form class="popup__form">
+        <form class="popup__form">
+            <div class="popup__header">
+                <h2 class="popup__heading">Add task</h2>
                 <div class="popup__close">
-                    <button type="button" class="popup__close-btn" @click="emit('close', false)">X</button>
+                    <div class="popup__close-btn" @click="emit('close', false)"></div>
                 </div>
-                <h2>Add task</h2>
-                <div>
-                    <label class="popup__label" for="title">Title</label>
-                    <input id="title" type="text" v-model="taskDataFields.title"/>
-                </div>
-                <div>
-                    <label class="popup__label" for="description">description</label>
-                    <input id="description" type="text" v-model="taskDataFields.description"/>
-                </div>
-                <div>
-                    <label class="popup__label" for="duration">duration</label>
-                    <input id="duration" type="text" v-model="taskDataFields.duration"/>
-                </div>
-                <div>
-                    <label class="popup__label" for="priority">priority</label>
-                    <input id="priority" type="text" v-model="taskDataFields.priority"/>
-                </div>
-                <div class="popup__errors" v-if="error">
-                    {{ error }}
-                </div>
-                <div>Loading: {{loading}}</div>
-                <div class="error">
-                    <div v-if="error">Error:{{error}}</div>
-                </div>
-                <div><button type="button" :disabled="loading" @click="saveTask">Create</button></div>
-            </form>
-        </div>
+            </div>
+            <div class="popup__entry">
+                <label class="popup__label" for="title">Title</label>
+                <input id="title" type="text" v-model="taskDataFields.title"/>
+            </div>
+            <div class="popup__entry">
+                <label class="popup__label" for="description">description</label>
+                <textarea id="description" v-model="taskDataFields.description"/>
+            </div>
+            <div class="popup__entry">
+                <label class="popup__label" for="duration">duration</label>
+                <input id="duration" type="text" v-model="taskDataFields.duration"/>
+            </div>
+            <div class="popup__entry">
+                <label class="popup__label" for="priority">priority</label>
+                <input id="priority" type="text" v-model="taskDataFields.priority"/>
+            </div>
+            <div class="popup__errors" v-if="error">
+                {{ error }}
+            </div>
+            <div class="error">
+                <div v-if="error">Error:{{error}}</div>
+            </div>
+            <div class="popup__controls">
+                <button v-if="!!editTaskItem" class="popup__btn button button--is-delete" type="button" @click="emit('delete', editTaskItem.id)">Delete Task</button>
+                <button class="popup__btn button" type="button" :disabled="loading" @click="saveTask">Save</button>
+            </div>
+        </form>
     </div>
 </template>
 
 <script setup lang="ts">
 import { useStore } from '@/store';
 import { computed, ref, defineProps, defineEmits, reactive } from 'vue';
-import { ApiError, TaskData, TaskItem } from '@/types/type';
-import { api } from '@/services/ApiService';
+import { TaskData, TaskItem } from '@/types/type';
 
 
 const props = defineProps<{
     loading: boolean
     editTaskItem?: TaskItem
 }>()
-const emit = defineEmits(['close', 'saved', 'update:loading'])
+const emit = defineEmits(['close', 'save', 'delete'])
 const store = useStore()
 const tasks = computed(() => store.state.items)
 const error = ref('')
@@ -79,29 +80,16 @@ function validateInput(): boolean {
     return true;
 }
 
-async function saveTask() {
-    emit('update:loading', true)
+function saveTask() {
     if(!validateInput()) return
     const taskData: TaskData = {
         title: taskDataFields.title,
-        description: taskDataFields.description,
+        description: taskDataFields.description ?? undefined,
         duration: Number(taskDataFields.duration),
         prio: Number(taskDataFields.priority),
         completed: false,
     }
-
-    try {
-        if (!props.editTaskItem) {
-            await api.createTask(taskData)
-        } else {
-            await api.editTask(props.editTaskItem!.id, taskData)
-        }
-        emit('saved')
-    } catch(e) {
-        emit('update:loading', false)
-        const apiError = e as ApiError
-        error.value = `${apiError.code}: ${apiError.message}`
-    }
+    emit('save', taskData)
 }
 
 </script>
@@ -114,8 +102,83 @@ async function saveTask() {
 
 .popup {
 
+    &__btn {
+        width: 100%;
+        margin-bottom: px-to-rem(10);
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: px-to-rem(16);
+    }
+
+    &__heading {
+        margin: 0;
+    }
+
+    &__close {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: px-to-rem(34);
+        height: px-to-rem(34);
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    &__close-btn {
+        width: 18px;
+        height: 18px;
+        position: relative;
+
+        &:before, &:after {
+            position: absolute;
+            content: '';
+            background: var(--text-color);
+            transform-origin: center;
+            transform: rotate(45deg);
+        }
+        &:before{
+            height: px-to-rem(4);
+            width: px-to-rem(18);
+            left: 0;
+            top: 50%;
+            margin-top: px-to-rem(-2);
+            border-radius: px-to-rem(4);
+        }
+        &:after {
+            width: px-to-rem(4);
+            height: px-to-rem(18);
+            top: 0;
+            left: 50%;
+            margin-left: px-to-rem(-2);
+            border-radius: px-to-rem(4);
+        }
+    }
+
+    &__entry {
+        margin-bottom: px-to-rem(10);
+
+        input, textarea {
+            width: 100%;
+        }
+
+        textarea {
+            field-sizing: normal;
+        }
+    }
+
     &__overlay {
         position: fixed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         top: 0;
         right: 0;
         bottom: 0;
@@ -129,19 +192,25 @@ async function saveTask() {
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 20px;
+        padding: px-to-rem(20);
     }
 
 
     &__form {
         background: #fff;
-        max-width: 960px;
-        padding: 20px;
-        border-radius: 5px;
+        width: px-to-rem(360);
+        max-width: calc(100vw - #{px-to-rem(calc(#{$pagePadding} * 2))});
+        padding: px-to-rem(20);
+        border-radius: px-to-rem(5);
     }
 
     &__label {
         display: block;
+        margin-bottom: px-to-rem(3);
+    }
+
+    &__controls {
+        margin-top: px-to-rem(15);
     }
 }
 </style>

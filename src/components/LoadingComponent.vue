@@ -23,8 +23,8 @@
     width: 100vw;
 
     &__icon {
-        width: 80px;                   // Adjust size as needed
-        height: 80px;
+        width: px-to-rem(80);                   // Adjust size as needed
+        height: px-to-rem(80);
         border-radius: 50%;
         background: conic-gradient(
                 #ffffff,
